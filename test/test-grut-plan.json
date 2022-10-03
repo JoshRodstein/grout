@@ -1,0 +1,32 @@
+{
+  "count": 1,
+  "plans": [
+    {
+      "repo": {
+        "name": "grut",
+        "path": "/Users/jrodstein2/go-workspace/src/githubdev.dco.elmae/jrodstein/grut/.git",
+        "remotes": [
+          {
+            "name": "origin",
+            "urls": [
+              "http://githubdev.dco.elmae/CloudAutomation/grut.git"
+            ]
+          }
+        ]
+      },
+      "changes": [
+        {
+          "name": "origin",
+          "organization": "",
+          "current_urls": [
+            "http://githubdev.dco.elmae/CloudAutomation/grut.git"
+          ],
+          "new_urls": [
+            "https://github.devtools.rd.elliemae.io/CloudAutomation/grut.git"
+          ]
+        }
+      ],
+      "has_changes": true
+    }
+  ]
+}
