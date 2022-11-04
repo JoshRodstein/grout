@@ -74,6 +74,9 @@ This command by itself will run grout in interactive mode.`,
 		// Search for git repos
 		err := filepath.Walk(targetDir, func(path string, info os.FileInfo, err error) error {
 			err = mapRepository(path, info, err, &repoMap)
+			if err == filepath.SkipDir {
+				return filepath.SkipDir
+			}
 			if err != nil {
 				log.Fatalf("Unexpected error while walking directory tree: %s\n", err)
 			}

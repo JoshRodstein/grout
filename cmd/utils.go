@@ -33,6 +33,7 @@ const (
 	justGit   = "git"
 	http      = "http"
 	https     = "https"
+	ssh       = "ssh"
 	twoSpaces = "  "
 	sixSpaces = "  "
 
@@ -114,6 +115,9 @@ func createNewRemoteURLs(urls []string, set *ChangeSet) []string {
 
 	for _, url := range urls {
 		fields := strings.FieldsFunc(url, UrlSplit)
+		// TODO : account for protocol (ssh, http, https)
+		// ex. [ssh git stash.blackline.corp 7999 ca cat-mono.git]
+		fmt.Printf("%s", fields)
 		if len(fields) != 4 {
 			// Malformed Remote URL, skipping
 			continue
@@ -158,6 +162,10 @@ func mapRepository(path string, info os.FileInfo, err error, repoMap *RepoMap) e
 		return nil
 	}
 	if info.Name() == dotGit {
+		// if .git is a file then it sa submodule and we skip it
+		if !info.IsDir() {
+			return filepath.SkipDir
+		}
 		r, err := git.PlainOpen(path)
 		if err != nil {
 			err = fmt.Errorf(
@@ -190,7 +198,6 @@ func mapRepository(path string, info os.FileInfo, err error, repoMap *RepoMap) e
 			Remotes: mappedRemotes,
 		}
 		repoMap.Repos = append(repoMap.Repos, currentRepo)
-
 	} else if info.IsDir() {
 		parentDir = info.Name()
 	}
