@@ -17,7 +17,7 @@
 .idea/
 *DS_*
 *./json
-./grut-plan.json
+./grout-plan.json
 
 grout-macos
 grout-linux

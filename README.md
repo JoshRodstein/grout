@@ -111,7 +111,7 @@ No changes found
       -t, --toggle             Help message for toggle
     
     Global Flags:
-          --config string   config file (default is $HOME/.grut_bin.yaml)
+          --config string   config file (default is $HOME/.grout_bin.yaml)
       -v, --verbose         Verbose output for logging/debugging
 
       
@@ -129,7 +129,7 @@ No changes found
       -h, --help          help for update
     
     Global Flags:
-          --config string   config file (default is $HOME/.grut_bin.yaml)
+          --config string   config file (default is $HOME/.grout_bin.yaml)
       -v, --verbose         Verbose output for logging/debugging
 
 

@@ -59,6 +59,12 @@ type ErrorBundle struct {
 	Errors []error
 }
 
+func (re ErrorBundle) append(err error) ErrorBundle {
+	re.Errors = append(re.Errors, err)
+	re.Count = len(re.Errors)
+	return re
+}
+
 type SplitUrl struct {
 	Type    string
 	BaseURL string
@@ -148,21 +154,26 @@ func createNewRemoteURLs(urls []string, set *ChangeSet) []string {
 // If found, the repo is added to the RepoMap
 func mapRepository(path string, info os.FileInfo, err error, repoMap *RepoMap) error {
 	if err != nil {
-		errorBundle.Count += 1
-		errorBundle.Errors = append(errorBundle.Errors, err)
+		errorBundle = errorBundle.append(err)
 		return nil
 	}
 	if info.Name() == dotGit {
 		r, err := git.PlainOpen(path)
 		if err != nil {
-			fmt.Printf("Error opening repo: %v\n", err)
-			return err
+			err = fmt.Errorf(
+				fmt.Sprintf("Error opening repo %s: %v\n", parentDir, err),
+			)
+			errorBundle = errorBundle.append(err)
+			return nil
 		}
 
 		remotes, err := r.Remotes()
 		if err != nil {
-			fmt.Println(err)
-			return err
+			err = fmt.Errorf(
+				fmt.Sprintf("Error getting remotes for repo %s: %v\n", parentDir, err),
+			)
+			errorBundle = errorBundle.append(err)
+			return nil
 		}
 
 		var mappedRemotes []Remote
@@ -226,12 +237,12 @@ func createChangeSetFromMap(repoMap RepoMap) ChangeSet {
 func writeChangeSetToFile(changes ChangeSet, filename string) {
 	jsonStr, err := json.MarshalIndent(changes, "", twoSpaces)
 	if err != nil {
-		fmt.Println(err)
+		errorBundle = errorBundle.append(err)
 		return
 	}
 	err = ioutil.WriteFile(filename, jsonStr, os.ModePerm)
 	if err != nil {
-		fmt.Println(err)
+		errorBundle = errorBundle.append(err)
 		return
 	}
 }
@@ -247,6 +258,7 @@ func initPlanFromFile(fd string) (ChangeSet, error) {
 	byteValue, err := ioutil.ReadAll(jsonFile)
 	if err != nil {
 		fmt.Printf("Error reading json: %s\n", err)
+		return ChangeSet{}, err
 	}
 	byteValue = bytes.ReplaceAll(byteValue, []byte(twoSpaces), []byte(""))
 	var set ChangeSet
@@ -318,9 +330,9 @@ func UrlSplit(r rune) bool {
 
 func verifyTargetDirIsAbs() error {
 	if !filepath.IsAbs(targetDir) {
-		fmt.Printf("\nInvalid parameter: %s \n"+
+		err := fmt.Sprintf("\nInvalid parameter: %s \n"+
 			"Absolute path is required for search directory - Aborting\n", targetDir)
-		return errors.New("invalid parameter")
+		return errors.New(err)
 	}
 	return nil
 }

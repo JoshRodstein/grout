@@ -21,33 +21,27 @@ func IAmGrout() {
 func DisplayBundledErrors() {
 	var output string
 	for i := 0; i < errorBundle.Count; i++ {
-		errorOut := fmt.Sprintf("\terror %d: %s\n", i+1, errorBundle.Errors[i])
+		errorOut := fmt.Sprintf("\n\terror %d: %s\n", i+1, errorBundle.Errors[i])
 		output += errorOut
 	}
-	fmt.Println(output)
+	fmt.Print(output)
 }
 
 func DisplayBundledErrorsPlan() {
 	if errorBundle.Count > 0 {
-		output := "----------------------------\n"
-		output += "GRUt encountered the following error(s) while generating a plan...\n"
-		fmt.Println(output)
+		fmt.Println(": grout encountered the following error(s) while generating a plan...")
 		DisplayBundledErrors()
-		output = "It is recommended that you review these errors before executing the plan, as they may effect your desired changes.\n"
-		output += "----------------------------"
-		fmt.Println(output)
+		fmt.Println("You should review these errors before executing an update, as they may effect your desired changes.")
+		fmt.Println("----------------------------")
 	}
 }
 
 func DisplayBundledErrorsUpdate() {
 	if errorBundle.Count > 0 {
-		output := "----------------------------\n"
-		output += "GRUt encountered the following error(s) while executing a plan...\n"
-		fmt.Println(output)
+		fmt.Println("----> grout encountered the following error(s) while executing an update...")
 		DisplayBundledErrors()
-		output = "\nIt is recommended that you review these errors to ensure that your desired changes have been made.\n"
-		output += "----------------------------"
-		fmt.Println(output)
+		fmt.Println("\nYou should review these errors to ensure that your desired changes have been made.")
+		fmt.Println("----------------------------")
 	}
 }
 
@@ -56,7 +50,7 @@ func DisplayChangeCount(changes ChangeSet) {
 }
 
 func DisplayChangeIntention(changes ChangeSet) {
-	fmt.Printf("\nGRUT will perform %d change(s) across %d repo(s)\n\n", changes.Count, len(changes.Plans))
+	fmt.Printf("\ngrout will perform %d change(s) across %d repo(s)\n\n", changes.Count, len(changes.Plans))
 }
 
 func DisplayChangeResult(changes ChangeSet) {

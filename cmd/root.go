@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+	http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -75,13 +75,12 @@ This command by itself will run grout in interactive mode.`,
 		err := filepath.Walk(targetDir, func(path string, info os.FileInfo, err error) error {
 			err = mapRepository(path, info, err, &repoMap)
 			if err != nil {
-				fmt.Println(err)
-				return err
+				log.Fatalf("Unexpected error while walking directory tree: %s\n", err)
 			}
 			return nil
 		})
 		if err != nil {
-			log.Println(err)
+			log.Fatal(err)
 		}
 
 		// calculate changes for repos in repoMap
@@ -93,6 +92,10 @@ This command by itself will run grout in interactive mode.`,
 			DisplayChangePlanForDirectory(plan)
 		}
 		DisplayBundledErrorsPlan()
+
+		// Clear bundled errors from plan
+		errorBundle.Count = 0
+		errorBundle.Errors = nil
 
 		// Display intent of plan and prompt for confirmation before proceeding
 		if changeSet.Count > 0 {
